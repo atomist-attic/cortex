@@ -1,0 +1,21 @@
+---
+kind: "operation"
+client: "atomist-bot"
+generator:
+  name: "NewSpringBootRestService"
+  group: "atomist-rugs"
+  artifact: "spring-boot-rest-service"
+  version: "0.9.0"
+  origin:
+    repo: "https://github.com/atomist-rugs/spring-boot-rest-service.git"
+    branch: "bbeb8db6235597154ebdd20a7d9c4bdb924b5b33"
+    sha: "bbeb8db"
+  parameters:
+    - "project_name": "typescript-interface-generator"
+    - "artifactId": "myartifact"
+    - "groupId": "com.atomist"
+    - "version": "0.1.0-SNAPSHOT"
+    - "description": "Generates TypeScript model sources."
+    - "rootPackage": "com.atomist"
+    - "serviceClassName": "Test"
+
