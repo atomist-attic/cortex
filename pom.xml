@@ -7,32 +7,98 @@
 	<packaging>jar</packaging>
 	<name>rug-typescript-interface-generator</name>
 	<description>Generates Rug TypeScript model sources.</description>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
-    <scala.version>2.11.8</scala.version>
-    <scala.binary.version>2.11</scala.binary.version>
+        <scala.version>2.11.8</scala.version>
+        <scala.binary.version>2.11</scala.binary.version>
 		<timestamp>${maven.build.timestamp}</timestamp>
 		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
+        <rug.version>0.18.2</rug.version>
 	</properties>
-	<!-- <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.atomist</groupId>
-                <artifactId>atomist-bom</artifactId>
-                <version>0.9.0</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-					</dependencies>
-				</dependencyManagement> -->
+
 	<dependencies>
 		<dependency>
 			<groupId>com.atomist</groupId>
 			<artifactId>rug</artifactId>
-			<version>0.18.2</version>
+			<version>${rug.version}</version>
 		</dependency>
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest_${scala.binary.version}</artifactId>
+            <version>3.0.1</version>
+            <scope>test</scope>
+        </dependency>
 	</dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.7</version>
+                <configuration>
+                    <skipTests>true</skipTests>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>scala-maven-plugin</artifactId>
+                <version>3.2.2</version>
+                <executions>
+                    <execution>
+                        <id>scala-compile-first</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>scala-test-compile</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <scalaCompatVersion>${scala.binary.version}</scalaCompatVersion>
+                    <args>
+                        <!-- work-around for https://issues.scala-lang.org/browse/SI-8358 -->
+                        <arg>-nobootcp</arg>
+                        <arg>-deprecation</arg>
+                        <arg>-feature</arg>
+                        <arg>-language:existentials</arg>
+                        <arg>-language:implicitConversions</arg>
+                        <arg>-Xfatal-warnings</arg>
+                    </args>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.scalatest</groupId>
+                <artifactId>scalatest-maven-plugin</artifactId>
+                <version>1.0</version>
+                <configuration>
+                    <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
+                    <junitxml>.</junitxml>
+                    <filereports>WDF TestSuite.txt</filereports>
+                    <logForkedProcessCommand>true</logForkedProcessCommand>
+                    <!-- T: Failed test reminders with short stack traces -->
+                    <stdout>T</stdout>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>test</id>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 	<repositories>
         <repository>
@@ -47,7 +113,6 @@
             <id>atlassian</id>
             <name>Atlassian</name>
             <url>https://maven.atlassian.com/content/repositories/atlassian-public/</url>
-
         </repository>
     </repositories>
 
@@ -119,17 +184,17 @@
                                 </goals>
                                 <configuration>
                                     <!-- Pin versions to things we know are working. TS things tend to break! -->
-                                    <arguments>install --save-dev typescript@2.1.6 @types/node@7.0.5 typedoc@0.5.7 gulp@3.9.1 gulp-typedoc@2.0.2  @types/lodash@4.14.56</arguments>
+                                    <arguments>install --save-dev typescript@2.1.6 @atomist/rug@${rug.version} @types/node@7.0.5 typedoc@0.5.7 gulp@3.9.1 gulp-typedoc@2.0.2  @types/lodash@4.14.56</arguments>
                                 </configuration>
                                 <phase>process-test-resources</phase>
                             </execution>
                             <execution>
-                                <id>gulp typedoc</id>
+                                <id>gulp typedoc cortex</id>
                                 <goals>
                                     <goal>gulp</goal>
                                 </goals>
                                 <configuration>
-                                    <arguments>typedoc --gulpfile .atomist/node_modules/@atomist/rug/gulpfile.js</arguments>
+                                    <arguments>typedoc --gulpfile .atomist/node_modules/@atomist/cortex/gulpfile.js</arguments>
                                 </configuration>
                                 <phase>process-test-resources</phase>
                             </execution>
@@ -152,10 +217,6 @@
                                 <phase>process-test-resources</phase>
                                 <configuration>
                                     <target>
-                                        <exec executable="target/node_modules/typescript/bin/tsc" failonerror="true">
-                                            <arg value="-p"/>
-                                            <arg value="target/.atomist/node_modules/@atomist/rug"/>
-                                        </exec>
                                         <exec executable="target/node_modules/typescript/bin/tsc" failonerror="true">
                                             <arg value="-p"/>
                                             <arg value="target/.atomist/node_modules/@atomist/cortex"/>
@@ -186,18 +247,6 @@
                                         <copy todir="target/.atomist">
                                             <fileset dir="src/main/typescript"/>
                                         </copy>
-                                    </target>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>mkdir</id>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                                <phase>generate-sources</phase>
-                                <configuration>
-                                    <target>
-                                        <mkdir dir="target/.atomist/node_modules/@atomist/rug/model"/>
                                     </target>
                                 </configuration>
                             </execution>
@@ -233,19 +282,6 @@
                         <version>1.5.0</version>
                         <executions>
                             <execution>
-                                <id>generate-interfaces</id>
-                                <goals>
-                                    <goal>java</goal>
-                                </goals>
-                                <phase>compile</phase>
-                                <configuration>
-                                    <mainClass>com.atomist.rug.ts.TypeScriptInterfaceGenerator</mainClass>
-                                    <arguments>
-                                        <argument>target/.atomist/node_modules/@atomist/rug/model/Core.ts</argument>
-                                    </arguments>
-                                </configuration>
-                            </execution>
-                            <execution>
                                 <id>generate-extended-model</id>
                                 <goals>
                                     <goal>java</goal>
@@ -255,12 +291,12 @@
                                     <mainClass>com.atomist.rug.ts.CortexTypeGeneratorApp</mainClass>
                                     <arguments>
                                         <argument>target/.atomist/node_modules/@atomist/</argument>
+                                        <argument>/com/atomist/rug/ts/cortex.json</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
                         </executions>
                     </plugin>
-
                 </plugins>
             </build>
         </profile>
