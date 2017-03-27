@@ -1,9 +1,9 @@
-# Rug TypeScript Interface Generator
+# Rug Cortex TypeScript Interface Generator
 
-[![Build Status](https://travis-ci.org/com.atomist/typescript-interface-generator.svg?branch=master)](https://travis-ci.org/com.atomist/typescript-interface-generator)
+[![Build Status](https://travis-ci.org/com.atomist/rug-cortex-typescript-interface-generator.svg?branch=master)](https://travis-ci.org/com.atomist/rug-cortex-typescript-interface-generator)
 [![Slack Status](https://join.atomist.com/badge.svg)](https://join.atomist.com)
 
-This project generates Rug TypeScript model sources.
+This project generates the Rug Cortex TypeScript interface sources.
 
 ---
 Created by [Atomist][atomist].
