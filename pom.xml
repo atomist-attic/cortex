@@ -32,74 +32,6 @@
         </dependency>
 	</dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.7</version>
-                <configuration>
-                    <skipTests>true</skipTests>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>net.alchim31.maven</groupId>
-                <artifactId>scala-maven-plugin</artifactId>
-                <version>3.2.2</version>
-                <executions>
-                    <execution>
-                        <id>scala-compile-first</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>add-source</goal>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>scala-test-compile</id>
-                        <phase>process-test-resources</phase>
-                        <goals>
-                            <goal>testCompile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <scalaCompatVersion>${scala.binary.version}</scalaCompatVersion>
-                    <args>
-                        <!-- work-around for https://issues.scala-lang.org/browse/SI-8358 -->
-                        <arg>-nobootcp</arg>
-                        <arg>-deprecation</arg>
-                        <arg>-feature</arg>
-                        <arg>-language:existentials</arg>
-                        <arg>-language:implicitConversions</arg>
-                        <arg>-Xfatal-warnings</arg>
-                    </args>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.scalatest</groupId>
-                <artifactId>scalatest-maven-plugin</artifactId>
-                <version>1.0</version>
-                <configuration>
-                    <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
-                    <junitxml>.</junitxml>
-                    <filereports>WDF TestSuite.txt</filereports>
-                    <logForkedProcessCommand>true</logForkedProcessCommand>
-                    <!-- T: Failed test reminders with short stack traces -->
-                    <stdout>T</stdout>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>test</id>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-
 	<repositories>
         <repository>
             <id>public-atomist-release</id>
@@ -225,32 +157,6 @@
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>mk-ts-output-dir</id>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                                <phase>generate-sources</phase>
-                                <configuration>
-                                    <target>
-                                        <mkdir dir="target/.atomist"/>
-                                    </target>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>copy-ts</id>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                                <phase>generate-sources</phase>
-                                <configuration>
-                                    <target>
-                                        <copy todir="target/.atomist">
-                                            <fileset dir="src/main/typescript"/>
-                                        </copy>
-                                    </target>
-                                </configuration>
-                            </execution>
-                            <execution>
                                 <id>mkdir_cortex</id>
                                 <goals>
                                     <goal>run</goal>
@@ -291,7 +197,6 @@
                                     <mainClass>com.atomist.rug.ts.CortexTypeGeneratorApp</mainClass>
                                     <arguments>
                                         <argument>target/.atomist/node_modules/@atomist/</argument>
-                                        <argument>/com/atomist/rug/ts/cortex.json</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
