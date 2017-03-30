@@ -55,13 +55,9 @@ function main() {
 
     if [[ $TRAVIS_BRANCH == master || $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
         msg "version is $project_version"
-        local mvn_deploy_args
-        if [[ $TRAVIS_BRANCH == master ]]; then
-            mvn_deploy_args=-DaltDeploymentRepository=public-atomist-dev::default::https://atomist.jfrog.io/atomist/libs-dev-local
-        fi
 
-        if ! $mvn deploy site -DskipTests $mvn_deploy_args; then
-            err "maven deploy failed"
+        if ! $mvn install -DskipTests; then
+            err "maven install failed"
             return 1
         fi
 
