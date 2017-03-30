@@ -1,0 +1,33 @@
+dist: trusty
+sudo: required
+language: java
+jdk:
+- oraclejdk8
+branches:
+  except:
+  - "/\\+travis\\d+$/"
+env:
+  global:
+install: wget https://api.atomist.com/model/schema -O src/main/resources/com/atomist/rug/ts/cortex.json
+script: bash src/main/scripts/travis-build.bash
+notifications:
+  email: false
+  webhooks:
+    on_success: always
+    on_failure: always
+    on_start: always
+    urls:
+    - https://webhook.atomist.com/travis
+cache:
+  directories:
+  - "$HOME/.m2"
+before_deploy:
+- nvm install 6.9.2
+deploy:
+  provider: releases
+  api_key:
+  on:
+    tags: true
+    condition: "$TRAVIS_TAG =~ ^[0-9]+\\.[0-9]+\\.[0-9]+$"
+after_deploy:
+- bash src/main/scripts/npm-publish.bash $TRAVIS_TAG cortex
