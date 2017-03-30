@@ -56,11 +56,6 @@ function main() {
     if [[ $TRAVIS_BRANCH == master || $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
         msg "version is $project_version"
 
-        if ! $mvn install -DskipTests; then
-            err "maven install failed"
-            return 1
-        fi
-
         if ! git config --global user.email "travis-ci@atomist.com"; then
             err "failed to set git user email"
             return 1
