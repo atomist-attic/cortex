@@ -38,11 +38,6 @@ function main() {
         fi
     fi
 
-    if ! $mvn scoverage:report -Dmaven.javadoc.skip=true; then
-        err "tests failed"
-        return 1
-    fi
-
     if ! $mvn install -DskipTests -Dmaven.javadoc.skip=true; then
         err "maven install failed"
         return 1
