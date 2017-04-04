@@ -15,7 +15,7 @@
         <scala.binary.version>2.11</scala.binary.version>
 		<timestamp>${maven.build.timestamp}</timestamp>
 		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
-        <rug.version>0.18.2</rug.version>
+        <rug.version>0.24.0</rug.version>
 	</properties>
 
 	<dependencies>
