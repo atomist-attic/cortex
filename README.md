@@ -36,6 +36,8 @@ $ mvn test
 
 The resulting documentation can be found under `target/typedoc`.
 
+[typedoc]: http://typedoc.org/
+
 ## Releasing
 
 To create a new release of the project, simply push a tag of the form
