@@ -44,7 +44,7 @@ function main() {
             return 1
         fi
         if ! wget https://api-staging.atomist.services/model/schema -O src/main/resources/com/atomist/rug/ts/cortex.json; then
-            err "Failed to download production cortex json"
+            err "Failed to download staging cortex json"
             return 1
         fi
     fi
@@ -60,7 +60,7 @@ function main() {
     fi
 
     if [[ $TRAVIS_BRANCH == master ]]; then
-        if ! src/main/scripts/npm-publish-dev.bash $project_version cortex; then
+        if ! src/main/scripts/npm-publish.bash $project_version cortex; then
             err "npm publish to dev repo failed"
             return 1
         fi

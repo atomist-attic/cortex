@@ -24,7 +24,8 @@ function publish() {
     shift
     local module_name=$1
     if [[ ! $module_name ]]; then
-        module_name=rug
+        err "publish: missing required parameter: MODULE_NAME"
+        return 10
     else
         shift
     fi
@@ -37,29 +38,45 @@ function publish() {
     fi
     rm -f "$package.in"
 
-    # install latest rug release in package.json
-    if ! npm install @atomist/rug@latest -S; then
-        err "Failed to install latest @atomist/rug from npmjs.org"
-        return 1
-    fi
-
-    if [[ $NPM_TOKEN ]]; then
-        msg "Creating local .npmrc using API key from environment"
-        if ! ( umask 077 && echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > "$HOME/.npmrc" ); then
-            err "failed to create $HOME/.npmrc"
-            return 1
-        fi
-    else
-        msg "assuming your .npmrc is setup correctly for this project"
-    fi
-
     # npm honors this
     rm -f "$target/.gitignore"
 
-    if ! ( cd "$target" && npm publish --access=public ); then
-        err "failed to publish node module"
-        cat "$target/npm-debug.log"
-        return 1
+    if [[ $module_version =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+        if [[ $NPM_TOKEN ]]; then
+            msg "Creating local .npmrc using API key from environment"
+            if ! ( umask 077 && echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > "$HOME/.npmrc" ); then
+                err "failed to create $HOME/.npmrc"
+                return 1
+            fi
+        else
+            msg "assuming your .npmrc is setup correctly for this project"
+        fi
+        if ! ( cd "$target" && npm publish --access=public ); then
+           err "failed to publish node module"
+           cat "$target/npm-debug.log"
+           return 1
+        fi
+    elif [[ $TRAVIS_BRANCH == master ]]; then
+        # install latest rug dev version in package.json
+        if ! npm install @atomist/rug@latest -S --registry https://atomist.jfrog.io/atomist/api/npm/npm-dev; then
+            err "Failed to install latest @atomist/rug from https://atomist.jfrog.io/atomist/api/npm/npm-dev"
+            return 1
+        fi
+        if [[ $ATOMIST_REPO_TOKEN  && $ATOMIST_REPO_USER ]]; then
+            msg "Creating local .npmrc using API key from environment"
+            if ! ( curl -u"${ATOMIST_REPO_USER}":"${ATOMIST_REPO_TOKEN}" "https://atomist.jfrog.io/atomist/api/npm/auth" >  "$HOME/.npmrc"); then
+                err "failed to create $HOME/.npmrc"
+                return 1
+            fi
+        else
+            msg "assuming your .npmrc is setup correctly for this project"
+        fi
+
+        if ! ( cd "$target" && npm publish --registry https://atomist.jfrog.io/atomist/api/npm/npm-dev-local --access=public ); then
+            err "failed to publish node module"
+            cat "$target/npm-debug.log"
+            return 1
+        fi
     fi
 }
 
