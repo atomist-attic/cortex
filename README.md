@@ -38,6 +38,22 @@ The resulting documentation can be found under `target/typedoc`.
 
 [typedoc]: http://typedoc.org/
 
+Development versions of the `@atomist/cortex` npm module are published to
+`https://atomist.jfrog.io/atomist/api/npm/npm-dev`. The most
+straightforward way to get these versions without making changes to
+your configuration is:
+
+```bash
+$ npm install @atomist/cortex --registry https://atomist.jfrog.io/atomist/api/npm/npm-dev
+```
+
+Alternatively, if you always want the latest snapshots, you can change
+your config for the @atomist scope:
+
+```
+npm config set @atomist:registry https://atomist.jfrog.io/atomist/api/npm/npm-dev
+```
+
 ## Releasing
 
 To create a new release of the project, simply push a tag of the form
