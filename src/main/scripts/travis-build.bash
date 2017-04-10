@@ -19,12 +19,19 @@ function main() {
 
     local mvn="mvn --settings .settings.xml -B -V"
     local project_version
+
+    mkdir -p src/main/resources/com/atomist/rug/ts
+
     if [[ $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
         if ! $mvn build-helper:parse-version versions:set -DnewVersion="$TRAVIS_TAG" versions:commit; then
             err "failed to set project version"
             return 1
         fi
         project_version="$TRAVIS_TAG"
+        if ! wget https://api.atomist.com/model/schema -O src/main/resources/com/atomist/rug/ts/cortex.json; then
+                err "Failed to download production cortex json"
+                return 1
+        fi
     else
         if ! $mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.incrementalVersion}-\${timestamp} versions:commit
         then
@@ -34,6 +41,10 @@ function main() {
         project_version=$(mvn help:evaluate -Dexpression=project.version | grep -v "^\[")
         if [[ $? != 0 || ! $project_version ]]; then
             err "failed to parse project version"
+            return 1
+        fi
+        if ! wget https://api-staging.atomist.services/model/schema -O src/main/resources/com/atomist/rug/ts/cortex.json; then
+            err "Failed to download production cortex json"
             return 1
         fi
     fi
@@ -46,6 +57,13 @@ function main() {
     if [[ $TRAVIS_PULL_REQUEST != false ]]; then
         msg "not publishing or tagging pull request"
         return 0
+    fi
+
+    if [[ $TRAVIS_BRANCH == master ]]; then
+        if ! src/main/scripts/npm-publish-dev.bash $project_version cortex; then
+            err "npm publish to dev repo failed"
+            return 1
+        fi
     fi
 
     if [[ $TRAVIS_BRANCH == master || $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
