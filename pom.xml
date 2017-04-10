@@ -14,7 +14,7 @@
         <scala.binary.version>2.11</scala.binary.version>
 		<timestamp>${maven.build.timestamp}</timestamp>
 		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
-        <rug.version>0.24.0</rug.version>
+        <rug.version>(0.25.0,0.26.0]</rug.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -34,6 +34,13 @@
             <id>public-atomist-release</id>
             <name>Atomist Release</name>
             <url>https://atomist.jfrog.io/atomist/libs-release</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>public-atomist-snapshots</id>
+            <url>https://atomist.jfrog.io/atomist/libs-dev/</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
@@ -75,7 +82,7 @@
                         </goals>
                         <configuration>
                             <!-- Pin versions to things we know are working. TS things tend to break! -->
-                            <arguments>install --save-dev typescript@2.1.6 @atomist/rug@${rug.version} @types/node@7.0.5 typedoc@0.5.7 gulp@3.9.1 gulp-typedoc@2.0.2  @types/lodash@4.14.56</arguments>
+                            <arguments>install --save-dev typescript@2.1.6 @atomist/rug@latest @types/node@7.0.5 typedoc@0.5.7 gulp@3.9.1 gulp-typedoc@2.0.2  @types/lodash@4.14.56</arguments>
                         </configuration>
                         <phase>process-test-resources</phase>
                     </execution>
@@ -100,6 +107,19 @@
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>1.8</version>
                 <executions>
+                    <!-- Remove this once stubs work -->
+                    <execution>
+                        <id>remove-stubs</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <phase>process-test-resources</phase>
+                        <configuration>
+                            <target>
+                                <deltree dir="${project.build.directory}/.atomist/node_modules/@atomist/cortex/stub"/>
+                            </target>
+                        </configuration>
+                    </execution>
                     <execution>
                         <id>compile-typescript</id>
                         <goals>
