@@ -4,7 +4,7 @@
 set -o pipefail
 
 declare Pkg=travis-build-mvn
-declare Version=0.1.0
+declare Version=0.2.0
 
 function msg() {
     echo "$Pkg: $*"
@@ -20,7 +20,13 @@ function main() {
     local mvn="mvn --settings .settings.xml -B -V"
     local project_version
 
-    mkdir -p src/main/resources/com/atomist/rug/ts
+    local schema_dir=src/main/resources/com/atomist/rug/ts
+    if ! mkdir -p "$schema_dir"; then
+        err "failed to create ts resource directory"
+        return 1
+    fi
+    local schema_path=$schema_dir/cortex.json
+    local schema_url
 
     if [[ $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
         if ! $mvn build-helper:parse-version versions:set -DnewVersion="$TRAVIS_TAG" versions:commit; then
@@ -28,10 +34,7 @@ function main() {
             return 1
         fi
         project_version="$TRAVIS_TAG"
-        if ! wget https://api.atomist.com/model/schema -O src/main/resources/com/atomist/rug/ts/cortex.json; then
-                err "Failed to download production cortex json"
-                return 1
-        fi
+        schema_url=https://api.atomist.com/model/schema
     else
         if ! $mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.incrementalVersion}-\${timestamp} versions:commit
         then
@@ -43,10 +46,19 @@ function main() {
             err "failed to parse project version"
             return 1
         fi
-        if ! wget https://api-staging.atomist.services/model/schema -O src/main/resources/com/atomist/rug/ts/cortex.json; then
-            err "Failed to download production cortex json"
+        local rug_version
+        rug_version=$(mvn help:evaluate -Dexpression=rug.version | grep -v "^\[")
+        if [[ $? != 0 || ! $rug_version ]]; then
+            err "failed to parse rug version"
             return 1
         fi
+        mvn="$mvn -Drug.version=($rug_version,) -Dnpm.snapshot=true"
+        schema_url=https://api-staging.atomist.services/model/schema
+    fi
+
+    if ! wget "$schema_url" -O "$schema_path"; then
+        err "failed to download cortex json schema from $schema_url to $schema_path"
+        return 1
     fi
 
     if ! $mvn install -DskipTests -Dmaven.javadoc.skip=true; then
@@ -60,7 +72,7 @@ function main() {
     fi
 
     if [[ $TRAVIS_BRANCH == master ]]; then
-        if ! src/main/scripts/npm-publish-dev.bash $project_version cortex; then
+        if ! bash src/main/scripts/npm-publish.bash "$project_version" cortex; then
             err "npm publish to dev repo failed"
             return 1
         fi
