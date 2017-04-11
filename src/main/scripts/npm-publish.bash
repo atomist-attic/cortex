@@ -46,8 +46,12 @@ function publish() {
             msg "assuming your .npmrc is setup correctly for this project"
         fi
     elif [[ $TRAVIS_BRANCH == master ]]; then
+        if ! npm install @atomist/rug@latest -S --registry https://atomist.jfrog.io/atomist/api/npm/npm-dev-local; then
+            err "Failed to install latest @atomist/rug from https://atomist.jfrog.io/atomist/api/npm/npm-dev-local"
+            return 1
+        fi
         if [[ $ATOMIST_REPO_TOKEN && $ATOMIST_REPO_USER ]]; then
-            msg "creating local .npmrc using API key from environment"
+            msg "creating local .npmrc using auth details pulled from Artifactory"
             if ! ( umask 077 && curl --quiet -u"$ATOMIST_REPO_USER:$ATOMIST_REPO_TOKEN" https://atomist.jfrog.io/atomist/api/npm/auth > "$HOME/.npmrc" 2>/dev/null ); then
                 err "failed to create $HOME/.npmrc"
                 return 1
@@ -55,6 +59,7 @@ function publish() {
         else
             msg "assuming your .npmrc is setup correctly for this project"
         fi
+    else
         registry=--registry=https://atomist.jfrog.io/atomist/api/npm/npm-dev-local
     fi
 
