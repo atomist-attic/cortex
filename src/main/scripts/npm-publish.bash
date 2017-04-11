@@ -45,7 +45,7 @@ function publish() {
         else
             msg "assuming your .npmrc is setup correctly for this project"
         fi
-    elif [[ $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+-snapshots$ ]]; then
+    elif [[ $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+-\snapshots$ ]]; then
         # latest snapshots _and publish to dev repo
         if ! npm install @atomist/rug@latest -S --registry https://atomist.jfrog.io/atomist/api/npm/npm-dev-local; then
             err "Failed to install latest @atomist/rug from https://atomist.jfrog.io/atomist/api/npm/npm-dev-local"

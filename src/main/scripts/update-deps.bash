@@ -16,7 +16,7 @@ function err() {
 function main() {
     msg "branch is ${TRAVIS_BRANCH}"
 
-    if [[ $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+-snapshots$ ]]; then
+    if [[ $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+\-snapshots$ ]]; then
         msg "updating @atomist modules to latest development versions"
         local registry=https://atomist.jfrog.io/atomist/api/npm/npm-dev-local
         local module

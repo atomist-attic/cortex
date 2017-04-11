@@ -35,7 +35,7 @@ function main() {
         fi
         project_version="$TRAVIS_TAG"
         schema_url=https://api.atomist.com/model/schema
-    elif [[ $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+-staging$ ]]; then
+    elif [[ $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+\-staging$ ]]; then
         msg "Doing release from staging cortex..."
         project_version="${TRAVIS_TAG::-7}"
         if ! $mvn build-helper:parse-version versions:set -DnewVersion="$project_version" versions:commit; then
@@ -87,7 +87,7 @@ function main() {
         return 0
     fi
 
-    if [[ $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+-snapshots$ ]]; then
+    if [[ $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+-\snapshots$ ]]; then
         if ! bash src/main/scripts/npm-publish.bash "$project_version" cortex; then
             err "npm publish to dev repo failed"
             return 1
