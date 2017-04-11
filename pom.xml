@@ -98,8 +98,8 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <installDirectory>${project.build.directory}</installDirectory>
-                    <workingDirectory>${project.build.directory}</workingDirectory>
+                    <installDirectory>target/</installDirectory>
+                    <workingDirectory>target/</workingDirectory>
                 </configuration>
             </plugin>
             <plugin>
