@@ -82,7 +82,7 @@
                         </goals>
                         <configuration>
                             <!-- Pin versions to things we know are working. TS things tend to break! -->
-                            <arguments>install --save-dev typescript@2.1.6 typedoc@0.5.7 gulp@3.9.1 gulp-typedoc@2.0.2 @types/lodash@4.14.56</arguments>
+                            <arguments>install --save-dev typescript@2.2.2 typedoc@0.5.7 gulp@3.9.1 gulp-typedoc@2.0.2 @types/lodash@4.14.56</arguments>
                         </configuration>
                         <phase>generate-sources</phase>
                     </execution>
@@ -150,7 +150,7 @@
 									<arg value="install"/>
 									<arg value="@atomist/rug@latest" unless:blank="${npm.snapshot}"/>
 									<arg value="--save" unless:blank="${npm.snapshot}"/>
-									<arg value="--registry=https://atomist.jfrog.io/atomist/api/npm/npm-dev" unless:blank="${npm.snapshot}"/>
+									<arg value="--registry=https://atomist.jfrog.io/atomist/api/npm/npm-dev-local" unless:blank="${npm.snapshot}"/>
 								</exec>
                             </target>
                         </configuration>
