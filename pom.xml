@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.atomist</groupId>
 	<artifactId>cortex</artifactId>
-	<version>0.25.0-SNAPSHOT</version>
+	<version>0.26.0</version>
 	<packaging>jar</packaging>
 	<name>cortex</name>
 	<description>Generates Cortex TypeScript model sources.</description>
@@ -14,7 +14,7 @@
         <scala.binary.version>2.11</scala.binary.version>
 		<timestamp>${maven.build.timestamp}</timestamp>
 		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
-        <rug.version>0.24.0</rug.version>
+        <rug.version>0.25.0</rug.version>
 	</properties>
 	<dependencies>
 		<dependency>
