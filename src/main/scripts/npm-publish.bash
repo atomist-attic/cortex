@@ -52,7 +52,7 @@ function publish() {
         fi
         if [[ $ATOMIST_REPO_TOKEN && $ATOMIST_REPO_USER ]]; then
             msg "creating local .npmrc using auth details pulled from Artifactory"
-            if ! ( umask 077 && curl --quiet -u"$ATOMIST_REPO_USER:$ATOMIST_REPO_TOKEN" https://atomist.jfrog.io/atomist/api/npm/auth > "$HOME/.npmrc" 2>/dev/null ); then
+            if ! ( curl --quiet -u"$ATOMIST_REPO_USER:$ATOMIST_REPO_TOKEN" https://atomist.jfrog.io/atomist/api/npm/auth > "$HOME/.npmrc" ); then
                 err "failed to create $HOME/.npmrc"
                 return 1
             fi
