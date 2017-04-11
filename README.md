@@ -63,6 +63,14 @@ Releasing cortex often needs to be done in coordination with a Rug
 release.  To allow some flexibility, there are a few ways to release
 it.
 
+Once a new version of this repository has been released, you will need
+to update its version in the dependencies of the [rugs][] repository
+`package.json` and initiate a new release of that repository to
+publish a new version of the `@atomist/rugs` TypeScript module, which
+is the dependency everyone uses to bring in rug and cortex.
+
+[rugs]: https://github.com/atomist/rugs
+
 ### Production release
 
 To create a new release of the project, simply push a tag of the form
