@@ -35,6 +35,22 @@ function main() {
         fi
         project_version="$TRAVIS_TAG"
         schema_url=https://api.atomist.com/model/schema
+    elif [[ $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+-staging$ ]]; then
+        msg "Doing release from staging cortex..."
+        project_version="${TRAVIS_TAG::-7}"
+        if ! $mvn build-helper:parse-version versions:set -DnewVersion="$project_version" versions:commit; then
+            err "failed to set project version"
+            return 1
+        fi
+
+        local rug_version
+        rug_version=$(mvn help:evaluate -Dexpression=rug.version | grep -v "^\[")
+        if [[ $? != 0 || ! $rug_version ]]; then
+            err "failed to parse rug version"
+            return 1
+        fi
+        mvn="$mvn -Drug.version=($rug_version,)"
+        schema_url=https://api-staging.atomist.services/model/schema
     else
         if ! $mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.incrementalVersion}-\${timestamp} versions:commit
         then
@@ -53,7 +69,7 @@ function main() {
             return 1
         fi
         mvn="$mvn -Drug.version=($rug_version,) -Dnpm.snapshot=true"
-        schema_url=https://api-staging.atomist.services/model/schema
+        schema_url=https://api.atomist.com/model/schema
     fi
 
     if ! wget "$schema_url" -O "$schema_path"; then
@@ -71,14 +87,14 @@ function main() {
         return 0
     fi
 
-    if [[ $TRAVIS_BRANCH == master ]]; then
+    if [[ $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+-snapshots$ ]]; then
         if ! bash src/main/scripts/npm-publish.bash "$project_version" cortex; then
             err "npm publish to dev repo failed"
             return 1
         fi
     fi
 
-    if [[ $TRAVIS_BRANCH == master || $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    if [[ $TRAVIS_BRANCH == master || $project_version =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
         msg "version is $project_version"
 
         if ! git config --global user.email "travis-ci@atomist.com"; then

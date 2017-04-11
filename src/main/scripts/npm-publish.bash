@@ -45,7 +45,8 @@ function publish() {
         else
             msg "assuming your .npmrc is setup correctly for this project"
         fi
-    elif [[ $TRAVIS_BRANCH == master ]]; then
+    elif [[ $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+-snapshots$ ]]; then
+        # latest snapshots _and publish to dev repo
         if ! npm install @atomist/rug@latest -S --registry https://atomist.jfrog.io/atomist/api/npm/npm-dev-local; then
             err "Failed to install latest @atomist/rug from https://atomist.jfrog.io/atomist/api/npm/npm-dev-local"
             return 1
@@ -61,9 +62,10 @@ function publish() {
         fi
         registry=--registry=https://atomist.jfrog.io/atomist/api/npm/npm-dev-local
     else
-        err "Not publishing as not on master or a release"
-        return 1
+        err "Not publishing as not on master and not a release"
+        return 0
     fi
+
     if ! ( cd "$target" && npm publish --access=public $registry ); then
         err "failed to publish node module"
         cat "$target/npm-debug.log"
