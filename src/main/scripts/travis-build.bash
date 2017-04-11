@@ -55,7 +55,7 @@ function main() {
             err "unrecognized semver like-tag: $TRAVIS_TAG"
             return 1
         fi
-        if ! $mvn build-helper:parse-version versions:set -DnewVersion="$project_version" versions:commit; then
+        if ! mvn build-helper:parse-version versions:set -DnewVersion="$project_version" versions:commit; then
             err "failed to set project version to $project_version"
             return 1
         fi
@@ -105,13 +105,6 @@ function main() {
     if [[ $TRAVIS_PULL_REQUEST != false ]]; then
         msg "not publishing or tagging pull request"
         return 0
-    fi
-
-    if [[ $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+-\snapshots$ ]]; then
-        if ! bash src/main/scripts/npm-publish.bash "$project_version" cortex; then
-            err "npm publish to dev repo failed"
-            return 1
-        fi
     fi
 
     if [[ $TRAVIS_BRANCH == master || $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+ ]]; then
