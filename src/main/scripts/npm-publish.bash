@@ -59,10 +59,11 @@ function publish() {
         else
             msg "assuming your .npmrc is setup correctly for this project"
         fi
-    else
         registry=--registry=https://atomist.jfrog.io/atomist/api/npm/npm-dev-local
+    else
+        err "Not publishing as not on master or a release"
+        return 1
     fi
-
     if ! ( cd "$target" && npm publish --access=public $registry ); then
         err "failed to publish node module"
         cat "$target/npm-debug.log"
