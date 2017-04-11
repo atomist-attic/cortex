@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.atomist</groupId>
 	<artifactId>cortex</artifactId>
-	<version>0.30.0</version>
+	<version>0.31.0</version>
 	<packaging>jar</packaging>
 	<name>cortex</name>
 	<description>Generates Cortex TypeScript model sources.</description>
@@ -14,7 +14,8 @@
         <scala.binary.version>2.11</scala.binary.version>
 		<timestamp>${maven.build.timestamp}</timestamp>
 		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
-        <rug.version>0.25.0</rug.version>
+        <rug.version>0.25.1</rug.version>
+		<npm.version>v6.10.2</npm.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -71,9 +72,7 @@
                             <goal>install-node-and-npm</goal>
                         </goals>
                         <configuration>
-                            <nodeVersion>v6.10.2</nodeVersion>
-                            <installDirectory>${project.build.directory}</installDirectory>
-                            <workingDirectory>${project.build.directory}</workingDirectory>
+                            <nodeVersion>${npm.version}</nodeVersion>
                         </configuration>
                         <phase>generate-sources</phase>
                     </execution>
@@ -85,8 +84,6 @@
                         <configuration>
                             <!-- Pin versions to things we know are working. TS things tend to break! -->
                             <arguments>install --save-dev typescript@2.2.2 typedoc@0.5.7 gulp@3.9.1 gulp-typedoc@2.0.2 @types/lodash@4.14.56</arguments>
-                            <installDirectory>${project.build.directory}</installDirectory>
-                            <workingDirectory>${project.build.directory}</workingDirectory>
                         </configuration>
                         <phase>generate-sources</phase>
                     </execution>
@@ -97,12 +94,14 @@
                         </goals>
                         <configuration>
                             <arguments>typedoc --gulpfile .atomist/node_modules/@atomist/cortex/gulpfile.js</arguments>
-                            <installDirectory>${project.build.directory}</installDirectory>
-                            <workingDirectory>${project.build.directory}</workingDirectory>
                         </configuration>
                         <phase>package</phase>
                     </execution>
                 </executions>
+				<configuration>
+                    <installDirectory>${project.build.directory}</installDirectory>
+                    <workingDirectory>${project.build.directory}</workingDirectory>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -139,30 +138,11 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>install-atomist-rug</id>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <phase>process-resources</phase>
-                        <configuration>
-                            <target xmlns:unless="ant:unless">
-								<exec executable="npm"
-									  failonerror="true"
-									  dir="${project.build.directory}/.atomist/node_modules/@atomist/cortex">
-									<arg value="install"/>
-									<arg value="@atomist/rug@latest" unless:blank="${npm.snapshot}"/>
-									<arg value="--save" unless:blank="${npm.snapshot}"/>
-									<arg value="--registry=https://atomist.jfrog.io/atomist/api/npm/npm-dev-local" unless:blank="${npm.snapshot}"/>
-								</exec>
-                            </target>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>compile-typescript</id>
                         <goals>
                             <goal>run</goal>
                         </goals>
-                        <phase>process-resources</phase>
+                        <phase>test</phase>
                         <configuration>
                             <target>
                                 <exec executable="${project.build.directory}/node_modules/typescript/bin/tsc" failonerror="true">

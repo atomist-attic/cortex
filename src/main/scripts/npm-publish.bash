@@ -3,7 +3,7 @@
 set -o pipefail
 
 declare Pkg=npm-publish
-declare Version=0.2.0
+declare Version=0.3.0
 
 function msg() {
     echo "$Pkg: $*"
@@ -29,13 +29,27 @@ function publish() {
     fi
     shift
 
-    local target="target/.atomist/node_modules/@atomist/$module_name"
+    local target=target/.atomist/node_modules/@atomist/$module_name
 
     # npm honors this
     rm -f "$target/.gitignore"
 
     local registry
-    if [[ $module_version =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    if [[ $module_version =~ ^[0-9]+\.[0-9]+\.[0-9]+-[0-9]{14}$ ]]; then
+        msg "publishing snapshot version $module_version"
+        if [[ $ATOMIST_REPO_TOKEN && $ATOMIST_REPO_USER ]]; then
+            msg "creating local .npmrc using auth details pulled from Artifactory"
+            if ! ( umask 077 && curl -s -u"$ATOMIST_REPO_USER:$ATOMIST_REPO_TOKEN" https://atomist.jfrog.io/atomist/api/npm/auth > "$HOME/.npmrc" 2>/dev/null )
+            then
+                err "failed to create $HOME/.npmrc"
+                return 1
+            fi
+        else
+            msg "assuming your .npmrc is setup correctly to publish snapshots"
+        fi
+        registry=--registry=https://atomist.jfrog.io/atomist/api/npm/npm-dev-local
+    elif [[ $module_version =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+        msg "publishing release version $module_version"
         if [[ $NPM_TOKEN ]]; then
             msg "creating local .npmrc using NPM token from environment"
             if ! ( umask 077 && echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > "$HOME/.npmrc" ); then
@@ -43,27 +57,11 @@ function publish() {
                 return 1
             fi
         else
-            msg "assuming your .npmrc is setup correctly for this project"
+            msg "assuming your .npmrc is setup correctly to publish to npmjs.org"
         fi
-    elif [[ $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+-\snapshots$ ]]; then
-        # latest snapshots _and publish to dev repo
-        if ! npm install @atomist/rug@latest -S --registry https://atomist.jfrog.io/atomist/api/npm/npm-dev-local; then
-            err "Failed to install latest @atomist/rug from https://atomist.jfrog.io/atomist/api/npm/npm-dev-local"
-            return 1
-        fi
-        if [[ $ATOMIST_REPO_TOKEN && $ATOMIST_REPO_USER ]]; then
-            msg "creating local .npmrc using auth details pulled from Artifactory"
-            if ! ( umask 077 && curl -s -u"$ATOMIST_REPO_USER:$ATOMIST_REPO_TOKEN" https://atomist.jfrog.io/atomist/api/npm/auth > "$HOME/.npmrc" 2>/dev/null ); then
-                err "failed to create $HOME/.npmrc"
-                return 1
-            fi
-        else
-            msg "assuming your .npmrc is setup correctly for this project"
-        fi
-        registry=--registry=https://atomist.jfrog.io/atomist/api/npm/npm-dev-local
     else
-        err "Not publishing as not on master and not a release"
-        return 0
+        err "not publishing invalid version: $module_version"
+        return 1
     fi
 
     if ! ( cd "$target" && npm publish --access=public $registry ); then
