@@ -72,6 +72,8 @@
                         </goals>
                         <configuration>
                             <nodeVersion>v6.10.2</nodeVersion>
+                            <installDirectory>${project.build.directory}</installDirectory>
+                            <workingDirectory>${project.build.directory}</workingDirectory>
                         </configuration>
                         <phase>generate-sources</phase>
                     </execution>
@@ -83,6 +85,8 @@
                         <configuration>
                             <!-- Pin versions to things we know are working. TS things tend to break! -->
                             <arguments>install --save-dev typescript@2.2.2 typedoc@0.5.7 gulp@3.9.1 gulp-typedoc@2.0.2 @types/lodash@4.14.56</arguments>
+                            <installDirectory>${project.build.directory}</installDirectory>
+                            <workingDirectory>${project.build.directory}</workingDirectory>
                         </configuration>
                         <phase>generate-sources</phase>
                     </execution>
@@ -93,14 +97,12 @@
                         </goals>
                         <configuration>
                             <arguments>typedoc --gulpfile .atomist/node_modules/@atomist/cortex/gulpfile.js</arguments>
+                            <installDirectory>${project.build.directory}</installDirectory>
+                            <workingDirectory>${project.build.directory}</workingDirectory>
                         </configuration>
                         <phase>package</phase>
                     </execution>
                 </executions>
-                <configuration>
-                    <installDirectory>target/</installDirectory>
-                    <workingDirectory>target/</workingDirectory>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
