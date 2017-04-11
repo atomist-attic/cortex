@@ -114,14 +114,14 @@ as the contents of the release notes.
 
 To create a new snapshot/development release of the project based on
 the development version of @atomist/rug, simply push a tag of the form
-`M.N.P-snapshots`.  For example:
+`M.N.P-snapshotI`.  For example:
 
 ```
-$ git tag -a 1.2.3-snapshots
+$ git tag -a 1.2.3-snapshot0
 ```
 
 **NOTE:** the published npm module version string will have
-`-snapshots` replaced with a timestamp and will be published to
+`-snapshotI` replaced with a timestamp and will be published to
 https://atomist.jfrog.io/atomist/api/npm/npm-dev-local
 
 The snapshot build will be based on the `staging` cortex model.  The
