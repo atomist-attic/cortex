@@ -32,11 +32,11 @@ function main() {
         if [[ $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             project_version="$TRAVIS_TAG"
             msg "releasing cortex version $project_version"
-        elif [[ $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+\-staging$ ]]; then
+        elif [[ $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+-staging$ ]]; then
             project_version=${TRAVIS_TAG:0:-8}
             schema_url=https://api-staging.atomist.services/model/schema
             msg "releasing cortex version $project_version using staging cortex model"
-        elif [[ $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+\-snapshot[0-9]*$ ]]; then
+        elif [[ $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+-snapshot[0-9]*$ ]]; then
             project_version=${TRAVIS_TAG%%-snapshot*}-$(date -u +%Y%m%d%H%M%S)
             if [[ $? -ne 0 || ! $project_version ]]; then
                 err "failed to create timestamp version for snapshot release: $project_version"
@@ -84,7 +84,7 @@ function main() {
     fi
 
     local module_target=target/.atomist/node_modules/@atomist/cortex
-    if [[ $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+\-snapshot[0-9]*$ ]]; then
+    if [[ $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+-snapshot[0-9]*$ ]]; then
         local registry=https://atomist.jfrog.io/atomist/api/npm/npm-dev-local
         if ! ( cd "$module_target" && npm install '@atomist/rug@latest' --save --registry="$registry" ); then
             err "failed to npm install latest @atomist/rug from $registry"
