@@ -4,7 +4,7 @@
 set -o pipefail
 
 declare Pkg=travis-build-mvn
-declare Version=0.3.0
+declare Version=0.4.0
 
 function msg() {
     echo "$Pkg: $*"
@@ -29,7 +29,7 @@ function main() {
     local schema_url=https://api.atomist.com/model/schema
 
     if [[ $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+ ]]; then
-        if [[ $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+        if [[ $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+(-(m|rc)\.[0-9]+)?$ ]]; then
             project_version="$TRAVIS_TAG"
             msg "releasing cortex version $project_version"
         elif [[ $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+-staging$ ]]; then

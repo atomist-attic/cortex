@@ -7,24 +7,64 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-[Unreleased]: https://github.com/com.atomist/typescript-interface-generator/compare/0.26.0...HEAD
+[Unreleased]: https://github.com/atomist/cortex/compare/1.0.0-m.1...HEAD
+
+## [1.0.0-m.1] - 2017-04-24
+
+[1.0.0-m.1]: https://github.com/atomist/cortex/compare/0.32.1...1.0.0-m.1
+
+Initial milestone 1 release
+
+### Changed
+
+-   Updated @atomist/rug dependency to 1.0.0-m.1
+
+## [0.33.0] - 2017-04-24
+
+[0.33.0]: https://github.com/atomist/cortex/compare/0.32.1...0.33.0
+
+Dependent release
+
+### Changed
+
+-   Updated various NPM module dependency versions
+
+### Added
+
+-   Fingerprint interface
+
+## [0.32.1] - 2017-04-24
+
+[0.32.1]: https://github.com/atomist/cortex/compare/0.32.0...0.32.1
+
+Brand new rug release
+
+### Changed
+
+-   Updated @atomist/rug dependency
+
+## [0.32.0] - 2017-04-24
+
+[0.32.0]: https://github.com/atomist/cortex/compare/0.31.0-staging...0.32.0
+
+License release
+
+### Fixed
+
+-   NPM module license is not ASLv2
 
 ## [0.26.0] - 2017-04-11
 
+[0.26.0]: https://github.com/atomist/cortex/compare/0.25.0...0.26.0
+
 Cortex Property Release
 
-## Changed
+### Changed
 
 -   Cortex now uses property access
 
-[0.26.0]: https://github.com/com.atomist/typescript-interface-generator/tree/0.26.0
-
 ## [0.1.0] - 2017-03-27
 
+[0.1.0]: https://github.com/atomist/cortex/tree/0.1.0
+
 Initial release
-
-[0.1.0]: https://github.com/com.atomist/typescript-interface-generator/tree/0.1.0
-
-Added
-
--   Everything
