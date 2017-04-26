@@ -48,7 +48,7 @@ function publish() {
             msg "assuming your .npmrc is setup correctly to publish snapshots"
         fi
         registry=--registry=https://atomist.jfrog.io/atomist/api/npm/npm-dev-local
-    elif [[ $module_version =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    elif [[ $module_version =~ ^[0-9]+\.[0-9]+\.[0-9]+(-(m|rc)\.[0-9]+)?$ ]]; then
         msg "publishing release version $module_version"
         if [[ $NPM_TOKEN ]]; then
             msg "creating local .npmrc using NPM token from environment"
