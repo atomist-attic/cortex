@@ -7,7 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-[Unreleased]: https://github.com/atomist/cortex/compare/1.0.0-m.2...HEAD
+[Unreleased]: https://github.com/atomist/cortex/compare/1.0.0-m.4...HEAD
+
+## [1.0.0-m.4] - 2017-06-01
+
+[1.0.0-m.4]: https://github.com/atomist/cortex/compare/1.0.0-m.3...1.0.0-m.4
+
+Initial milestone 4 release
+
+### Changed
+
+-   Updated @atomist/rug dependency to 1.0.0-m.4
 
 ## [1.0.0-m.2] - 2017-04-24
 
