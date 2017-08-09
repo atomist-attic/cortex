@@ -1,7 +1,6 @@
 # Atomist 'cortex'
 
 [![Build Status](https://travis-ci.org/atomist/cortex.svg?branch=master)](https://travis-ci.org/atomist/cortex)
-[![Slack Status](https://join.atomist.com/badge.svg)](https://join.atomist.com)
 
 Dynamically generate the [TypeScript][typescript] NPM
 module [`@atomist/cortex`][cortex-npm].
