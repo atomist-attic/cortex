@@ -10,12 +10,12 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
-        <scala.version>2.11.8</scala.version>
-        <scala.binary.version>2.11</scala.binary.version>
+		<scala.version>2.11.8</scala.version>
+		<scala.binary.version>2.11</scala.binary.version>
 		<timestamp>${maven.build.timestamp}</timestamp>
 		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
-        <rug.version>1.0.0-m.5</rug.version>
-		<npm.version>v6.10.2</npm.version>
+		<rug.version>1.0.0-m.7</rug.version>
+		<node.version>v8.3.0</node.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -72,7 +72,7 @@
                             <goal>install-node-and-npm</goal>
                         </goals>
                         <configuration>
-                            <nodeVersion>${npm.version}</nodeVersion>
+                            <nodeVersion>${node.version}</nodeVersion>
                         </configuration>
                         <phase>generate-sources</phase>
                     </execution>
@@ -83,7 +83,7 @@
                         </goals>
                         <configuration>
                             <!-- Pin versions to things we know are working. TS things tend to break! -->
-                            <arguments>install --save-dev typescript@2.2.2 @types/node@7.0.13 typedoc@0.5.10 gulp@3.9.1 gulp-typedoc@2.0.2 @types/lodash@4.14.62</arguments>
+                            <arguments>install --save-dev typescript@2.4.1 @types/node@8.0.11 typedoc@0.8.0 gulp@3.9.1 gulp-typedoc@2.0.3 @types/lodash@4.14.68 @atomist/rug</arguments>
                         </configuration>
                         <phase>generate-sources</phase>
                     </execution>

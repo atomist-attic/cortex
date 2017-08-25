@@ -7,7 +7,31 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-[Unreleased]: https://github.com/atomist/cortex/compare/1.0.0-m.4...HEAD
+[Unreleased]: https://github.com/atomist/cortex/compare/1.0.0-m.6...HEAD
+
+## [1.0.0-m.6] - 2017-08-24
+
+[1.0.0-m.6]: https://github.com/atomist/cortex/compare/1.0.0-m.5...1.0.0-m.6
+
+Initial milestone 6 release
+
+### Changed
+
+-   Updated @atomist/rug dependency to 1.0.0-m.7
+
+### Fixed
+
+-   Fixed build when property names are the same as TypeScript keywords
+
+## [1.0.0-m.5] - 2017-07-11
+
+[1.0.0-m.5]: https://github.com/atomist/cortex/compare/1.0.0-m.4...1.0.0-m.5
+
+Initial milestone 5 release
+
+### Changed
+
+-   Updated @atomist/rug dependency to 1.0.0-m.5
 
 ## [1.0.0-m.4] - 2017-06-01
 
