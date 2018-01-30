@@ -1,4 +1,4 @@
-# Atomist 'cortex'
+# DEPRECATED 'cortex'
 
 [![Build Status](https://travis-ci.org/atomist/cortex.svg?branch=master)](https://travis-ci.org/atomist/cortex)
 
